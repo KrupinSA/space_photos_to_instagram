@@ -10,7 +10,7 @@ def get_file_extension(url: str) -> str:
     return file_name.split('.')[-1]
 
 def download_save(url: str, full_path: str) -> None:
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     response.raise_for_status()
     with open(full_path, 'wb') as photo:
         photo.write(response.content)
@@ -26,18 +26,24 @@ def fetch_spacex_last_launch() -> None:
             img_full_path = os.path.join(img_path, f'rocket_spacex{num}.jpg')
             download_save(image_url, img_full_path)
 
+def fetch_hubble_photo_by_id(id: int) -> None:
+    hubble_url = f'http://hubblesite.org/api/v3/image/{id}'
+    schema = 'https:'
+    response = requests.get(hubble_url)
+    photos = response.json()['image_files']
+    fine_photo_url = photos[-1]['file_url']
+    fine_photo_url = f'{schema}{fine_photo_url}'
+    photo_full_path = os.path.join(img_path, f'image_{id}.{get_file_extension(fine_photo_url)}')
+    download_save(fine_photo_url, photo_full_path)
+
+
 def main():
     try:
         os.mkdir(img_path)
     except FileExistsError:
         pass
     fetch_spacex_last_launch()
-    hubble_url = 'http://hubblesite.org/api/v3/image/3811'
-    response = requests.get(hubble_url)
-    photos = response.json()['image_files']
-    for cur_photo in photos:
-        print(cur_photo['file_url'])
-        print(get_file_extension(cur_photo['file_url']))
+    fetch_hubble_photo_by_id(1)
 
 if __name__=="__main__":
     main()
