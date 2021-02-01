@@ -1,5 +1,5 @@
 # space_photos_to_instagram
-Uploads photos of spacex launches and photos of the Hubble telescope to instograms using public API. 
+Uploads photos of spacex launches and photos of the Hubble telescope to instagram using public API. 
 
 ### How to install
 
