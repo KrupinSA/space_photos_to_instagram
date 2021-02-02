@@ -20,6 +20,14 @@ Then use `pip` (or `pip3`, if there is a conflict with Python2) to install depen
 pip install -r requirements.txt
 ```
 
+## Run
+
+Launch on Linux(Python 3) or Windows:
+
+```sh
+$ python main.py
+```
+
 ### Project Goals
 
 The code is written for educational purposes on online-course for web-developers [dvmn.org](https://dvmn.org/).
