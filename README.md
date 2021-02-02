@@ -4,10 +4,11 @@ Uploads photos of spacex launches and photos of the Hubble telescope to instagra
 ### How to install
 
 You must be registered in the instagram. For access, a password and login are used.
-File contents:
+You must create a file: 
 ```
 .env
 ```
+File contents:
 ```
 inst_user='...'
 inst_pass='...'
