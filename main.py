@@ -9,15 +9,15 @@ import time
 WAIT_TIME = 5
 
 
-def save_file_by_url(url: str, filename: str) -> None:
+def save_file(url: str, filepath: str) -> None:
     response = requests.get(url, verify=False)
     response.raise_for_status()
-    with open(filename, 'wb') as photo:
+    with open(filepath, 'wb') as photo:
         photo.write(response.content)
 
 
 def fetch_spacex_last_launch(source_path) -> None:
-    spacex_url = "https://api.spacexdata.com/v4/launches/latest"
+    spacex_url = 'https://api.spacexdata.com/v4/launches/latest'
 
     response = requests.get(spacex_url)
     response = response.json()
@@ -25,18 +25,18 @@ def fetch_spacex_last_launch(source_path) -> None:
 
     for num, image_url in enumerate(rocket_photos):
             img_full_path = os.path.join(source_path, f'rocket_spacex{num}.jpg')
-            save_file_by_url(image_url, img_full_path)
+            save_file(image_url, img_full_path)
 
 
-def fetch_hubble_photo_by_id(id: int, source_path) -> None:
+def fetch_hubble_photo(photo_id: int, source_path) -> None:
     hubble_url = f'http://hubblesite.org/api/v3/image/{id}'
     schema = 'https:'
     response = requests.get(hubble_url)
     photos = response.json()['image_files']
     fine_photo_url = photos[-1]['file_url']
     fine_photo_url = f'{schema}{fine_photo_url}'
-    photo_full_path = os.path.join(source_path, f'image_{id}{os.path.splitext(fine_photo_url)[1]}')
-    save_file_by_url(fine_photo_url, photo_full_path)
+    photo_full_path = os.path.join(source_path, f'image_{photo_id}{os.path.splitext(fine_photo_url)[1]}')
+    save_file(fine_photo_url, photo_full_path)
 
 
 def fetch_hubble_photo_collection(path_to_images):
@@ -44,7 +44,7 @@ def fetch_hubble_photo_collection(path_to_images):
     params = {'page': 'all'}
     response = requests.get(hubble_url, params=params)
     for photo in response.json():
-        fetch_hubble_photo_by_id(photo['id'], path_to_images)
+        fetch_hubble_photo(photo['id'], path_to_images)
 
 
 def convert_images(source_path: str, dist_path: str) -> None:
@@ -59,8 +59,8 @@ def convert_images(source_path: str, dist_path: str) -> None:
         conv_img_full_path = os.path.join(dist_path, image_name)
         origin_img = Image.open(origin_img_full_path)
         origin_img.thumbnail((max_img_width, max_img_height))
-        origin_img = origin_img.convert('RGB')
-        origin_img.save(conv_img_full_path, 'JPEG')
+        convert_img = origin_img.convert('RGB')
+        convert_img.save(conv_img_full_path, 'JPEG')
 
 
 def upload_photos_to_instagram(username: str, password: str, source_path: str) -> None:

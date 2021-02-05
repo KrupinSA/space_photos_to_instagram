@@ -10,8 +10,8 @@ You must create a file:
 ```
 File contents:
 ```
-inst_user='...'
-inst_pass='...'
+INST_USER='...'
+INST_PASS='...'
 ```
 
 Python3 should be already installed. 
