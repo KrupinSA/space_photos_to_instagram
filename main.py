@@ -1,15 +1,18 @@
-import requests
-import pathlib
 import os
-from PIL import Image
+import pathlib
+import time
+
+import requests
+
 from dotenv import dotenv_values
 from instabot import Bot
-import time
+from PIL import Image
+
 
 WAIT_TIME = 5
 
 
-def save_file(url: str, filepath: str) -> None:
+def download_file(url: str, filepath: str) -> None:
     response = requests.get(url, verify=False)
     response.raise_for_status()
     with open(filepath, 'wb') as photo:
@@ -24,8 +27,8 @@ def fetch_spacex_last_launch(source_path) -> None:
     rocket_photos = response['links']['flickr']['original']
 
     for num, image_url in enumerate(rocket_photos):
-            img_full_path = os.path.join(source_path, f'rocket_spacex{num}.jpg')
-            save_file(image_url, img_full_path)
+        img_full_path = os.path.join(source_path, f'rocket_spacex{num}.jpg')
+        download_file(image_url, img_full_path)
 
 
 def fetch_hubble_photo(photo_id: int, source_path) -> None:
@@ -35,8 +38,11 @@ def fetch_hubble_photo(photo_id: int, source_path) -> None:
     photos = response.json()['image_files']
     fine_photo_url = photos[-1]['file_url']
     fine_photo_url = f'{schema}{fine_photo_url}'
-    photo_full_path = os.path.join(source_path, f'image_{photo_id}{os.path.splitext(fine_photo_url)[1]}')
-    save_file(fine_photo_url, photo_full_path)
+    photo_full_path = os.path.join(
+        source_path, 
+        f'image_{photo_id}{os.path.splitext(fine_photo_url)[1]}'
+    )
+    download_file(fine_photo_url, photo_full_path)
 
 
 def fetch_hubble_photo_collection(path_to_images):
@@ -59,8 +65,8 @@ def convert_images(source_path: str, dist_path: str) -> None:
         conv_img_full_path = os.path.join(dist_path, image_name)
         origin_img = Image.open(origin_img_full_path)
         origin_img.thumbnail((max_img_width, max_img_height))
-        convert_img = origin_img.convert('RGB')
-        convert_img.save(conv_img_full_path, 'JPEG')
+        converted_img = origin_img.convert('RGB')
+        converted_img.save(conv_img_full_path, 'JPEG')
 
 
 def upload_photos_to_instagram(username: str, password: str, source_path: str) -> None:
